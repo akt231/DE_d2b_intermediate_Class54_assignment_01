@@ -33,7 +33,7 @@ jobs:
       # Replace akt231 with your-docker-username and hello_world with your-image-name
 
     - name: Push Docker Image
-      run: docker push akt231/hello_world:latest:latest
+      run: docker push akt231/hello_world:latest
 
     - name: Cleanup
       run: docker logout
