@@ -1,20 +1,23 @@
-# using ubuntu LTS version
-FROM ubuntu:20.04 AS builder-image
+# Use the official Ubuntu as the base image
+FROM ubuntu:20.04
 
-LABEL Adegbayo Akintunde
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
 
-# avoid stuck build due to user prompt
-ARG DEBIAN_FRONTEND=noninteractive
+# Update and install required packages
+RUN apt-get update -y && apt-get install -y \
+    python3 \
+    python3-pip
 
-RUN apt-get update && apt-get install --no-install-recommends -y python3.9 python3.9-dev python3.9-venv python3-pip python3-wheel build-essential && \
-	apt-get clean && rm -rf /var/lib/apt/lists/*
+# Copy your Python application code to the container
+COPY hello.py /app/hello.py
+COPY overridehello.py /app/overridehello.py
 
+# Set the working directory
+WORKDIR /app
 
-ADD hello.py /home/hello.py
-ADD overridehello.py /home/overridehello.py
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+# Install Python dependencies (if you have a requirements.txt file)
+# RUN pip3 install -r requirements.txt
 
-COPY . .
-CMD ["/home/hello.py"]
-ENTRYPOINT ["python"]
+# Command to run your Python program
+CMD ["python3", "hello.py"]
