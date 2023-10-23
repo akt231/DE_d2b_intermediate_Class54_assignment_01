@@ -1,0 +1,39 @@
+
+# Prerequisites
+# Dockerfile defining how your Docker image will be built should be placed in your project's root directory.
+# Docker Image has been pushed to DockerHub Repo
+# Github Repo should contain code
+# Secrets has been setup in Github repo for DOCKERHUB_USERNAME: Docker Hub username.
+# Secrets has been setup in Github repo for DOCKERHUB_TOKEN: Your Docker Hub access token.
+# A .github/workflows directory has been created in the github repo where this yaml file will be placed
+# Commit the changes to the GitHub repository to trigger the workflow 
+# GitHub Actions will now automatically build and push the Docker image to Docker Hub whenever changes are pushed to the specified branch 
+#(in this case, 'main').
+
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main  # Adjust the branch as needed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Login to Docker Hub
+      run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+    - name: Build Docker Image
+      run: docker build -t akt231/hello_world:latest .
+      # Replace akt231 with your-docker-username and hello_world with your-image-name
+
+    - name: Push Docker Image
+      run: docker push akt231/hello_world:latest:latest
+
+    - name: Cleanup
+      run: docker logout
